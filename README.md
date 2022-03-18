@@ -1,16 +1,39 @@
-# dentalar
+<h1 align="center">
+  Plataforma de Automatizações Dental A.R
+</h1>
 
-A new Flutter project.
+<br>
 
-## Getting Started
+## 💻 Repositório
 
-This project is a starting point for a Flutter application.
+[Dental A.R System](https://github.com/lucasspeixoto/dentalar_system) é uma plataforma para disparo automatizado de mensagens de whatsApp e instagram, construído com Flutter Desktop
 
-A few resources to get you started if this is your first Flutter project:
+<br>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 🔖 Layout
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![interface](assets/images/layout.png 'Layout Atual')
+
+
+## ✨ Tecnologias
+
+O projeto Foi desenvolvido com as seguintes tecnologias:
+
+- [Flutter](https://flutter.dev/)
+- [Fluent UI](https://pub.dev/packages/fluent_ui)
+
+## 🚀 Instalação
+
+```bash
+# Clone o repositório e entre na pasta do projeto
+$ git clone https://github.com/lucasspeixoto/dentalar_system && cd dentalar_system
+
+# Instale as dependências
+$ pub get
+```
+
+## 📝 Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](https://opensource.org/licenses/MIT) para obter mais detalhes.
+
+---
