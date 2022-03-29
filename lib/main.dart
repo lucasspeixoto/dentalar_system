@@ -1,5 +1,7 @@
+import 'package:dentalar/models/contact_list.dart';
 import 'package:dentalar/screens/navigations_screen.dart';
 import 'package:dentalar/utils/colors_palette.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:system_theme/system_theme.dart';
@@ -51,15 +53,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
-      debugShowCheckedModeBanner: false,
-      title: appTitle,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        accentColor: Colors
-            .teal, /* iconTheme: const IconThemeData(size: 24, color: Palette.highlight) */
+    return ChangeNotifierProvider(
+      create: (context) => ContactList(),
+      child: FluentApp(
+        debugShowCheckedModeBanner: false,
+        title: appTitle,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors
+              .teal, /* iconTheme: const IconThemeData(size: 24, color: Palette.highlight) */
+        ),
+        home: const NavigationScreen(),
       ),
-      home: const NavigationScreen(),
     );
   }
 }
