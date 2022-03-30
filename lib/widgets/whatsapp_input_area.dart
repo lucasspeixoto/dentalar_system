@@ -1,3 +1,4 @@
+import 'package:dentalar/utils/colors_palette.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class WhatsappInputArea extends StatelessWidget {
@@ -6,7 +7,7 @@ class WhatsappInputArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.teal,
+      color: Colors.grey,
       margin: const EdgeInsets.only(
         left: 10,
         right: 10,
@@ -14,11 +15,12 @@ class WhatsappInputArea extends StatelessWidget {
         bottom: 30,
       ),
       alignment: Alignment.center,
-      child: const Center(
-        child: Text(
-          'Input Text area',
-          style: TextStyle(fontSize: 24),
-        ),
+      child: Center(
+        child: TextFormBox(
+            maxLines: 8,
+            header: 'Mensagem',
+            placeholder: 'Entre com a mensagem...',
+            style: const TextStyle(fontSize: 28, color: Palette.formText)),
       ),
     );
   }

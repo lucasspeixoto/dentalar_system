@@ -1,6 +1,5 @@
 import 'package:dentalar/models/contact_list.dart';
 import 'package:dentalar/screens/navigations_screen.dart';
-import 'package:dentalar/utils/colors_palette.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
@@ -36,7 +35,7 @@ void main() async {
     await flutter_acrylic.Window.initialize();
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
-      /* //await windowManager.setTitleBarStyle('hidden'); */
+      //await windowManager.setTitleBarStyle('hidden');
       await windowManager.setSize(const Size(1300, 700));
       await windowManager.setMinimumSize(const Size(1300, 700));
       await windowManager.setMaximumSize(const Size(1300, 700));

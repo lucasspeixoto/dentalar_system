@@ -11,7 +11,9 @@ class WhatsappScreen extends StatelessWidget {
       header: const PageHeader(
         title: Text(
           'WhatsApp',
-          style: TextStyle(fontSize: 32),
+          style: TextStyle(
+            fontSize: 32,
+          ),
         ),
       ),
       content: Row(

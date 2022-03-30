@@ -7,4 +7,5 @@ class Palette {
   static const Color highlight = Color(0xff25D366);
   static const Color backgroundBar = Color(0xffEDEDED);
   static const Color backgroundBarLight = Color(0xffF6F6F6);
+  static const Color formText = Color.fromARGB(255, 185, 185, 185);
 }

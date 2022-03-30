@@ -84,7 +84,7 @@ class ContactsList extends StatelessWidget {
                         contactsProvider.addContact(
                           Contact(
                             row[0]?.value,
-                            numberRow?.value,
+                            (numberRow?.value).toString(),
                             false,
                           ),
                         );
@@ -167,7 +167,12 @@ class ContactsList extends StatelessWidget {
             child: ListView.builder(
               itemCount: contacts.length,
               itemBuilder: (BuildContext context, int index) {
-                return ContactItem(context, index: index);
+                return Column(
+                  children: [
+                    ContactItem(context, index: index),
+                    const Divider()
+                  ],
+                );
               },
             ),
           ),

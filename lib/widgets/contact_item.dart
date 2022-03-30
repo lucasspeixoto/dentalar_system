@@ -22,13 +22,20 @@ class ContactItem extends StatelessWidget {
         backgroundColor: Palette.secondaryColor,
         child: Icon(FluentIcons.reminder_person, color: Colors.white),
       ),
-      title: Text(
-        contacts[index].name,
-        style: const TextStyle(
-          fontWeight: FontWeight.w500,
+      title: Expanded(
+        child: Text(
+          contacts[index].name,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
-      subtitle: Text(contacts[index].phoneNumber),
+      subtitle: Expanded(
+        child: Text(
+          contacts[index].phoneNumber,
+          softWrap: true,
+        ),
+      ),
       trailing: contacts[index].isSelected
           ? const Icon(
               FluentIcons.checkbox_composite_reversed,
