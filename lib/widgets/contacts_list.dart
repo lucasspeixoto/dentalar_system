@@ -15,11 +15,10 @@ class ContactsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late ContactList contactsProvider = Provider.of(context);
-
     late List<Contact> contacts = contactsProvider.contacts;
-    int? totalContacts = contactsProvider.contactsCount;
-
     late List<Contact> selectedContacts = contactsProvider.selectedContacts;
+    int contactsCount = contactsProvider.contactsCount;
+    int selectedContactsCount = contactsProvider.selectedContactsCount;
 
     return Container(
       margin: const EdgeInsets.only(
@@ -31,7 +30,7 @@ class ContactsList extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Lista de Contatos - ($totalContacts)',
+            'Lista de Contatos - ($contactsCount)',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -46,51 +45,7 @@ class ContactsList extends StatelessWidget {
               width: double.infinity,
               child: Button(
                 onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
-
-                  if (result == null) {
-                    return;
-                  }
-
-                  PlatformFile file = result.files.first;
-
-                  var bytes = File('${file.path}').readAsBytesSync();
-                  var excel = Excel.decodeBytes(bytes);
-
-                  final Iterable<String> keys = excel.tables.keys;
-                  final totalColumns = excel.tables[keys.first]!.maxCols;
-
-                  if (totalColumns != 2) {
-                    await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const ErrorContentDialog(
-                          Messages.excelLoadingTitle,
-                          Messages.excelLoadingContent,
-                          Messages.excelLoadingButtonText,
-                        );
-                      },
-                    );
-                  } else {
-                    for (var table in keys) {
-                      totalContacts = excel.tables[table]!.maxRows - 1;
-                      for (var row in excel.tables[table]!.rows) {
-                        final Data? nameRow = row[0];
-                        final Data? numberRow = row[1];
-                        if (nameRow!.cellIndex.rowIndex == 0) {
-                          continue;
-                        }
-                        contactsProvider.addContact(
-                          Contact(
-                            row[0]?.value,
-                            (numberRow?.value).toString(),
-                            false,
-                          ),
-                        );
-                      }
-                    }
-                  }
+                  selectContacts(context, contacts, contactsProvider);
                 },
                 child: const Text(
                   'Selecionar Contatos',
@@ -104,57 +59,38 @@ class ContactsList extends StatelessWidget {
           ),
           Row(
             children: [
-              totalContacts! > 0
-                  ? Button(
-                      onPressed: () {
-                        if (selectedContacts.length < contacts.length) {
-                          for (var index = 0;
-                              index < contacts.length;
-                              index++) {
-                            if (contacts[index].isSelected == false) {
-                              contactsProvider.addSelectedContacts(
-                                Contact(
-                                  contacts[index].name,
-                                  contacts[index].phoneNumber,
-                                  true,
-                                ),
-                              );
-                              contacts[index].isSelected = true;
-                            }
-                          }
-                        }
-                      },
-                      child: const Text(
-                        'Selecionar Todos',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+              contactsProvider.contactsCount > 0
+                  ? Expanded(
+                      flex: 5,
+                      child: Button(
+                        onPressed: () {
+                          contactsProvider.makeAllContactsAsSelected();
+                        },
+                        child: const Text(
+                          'Todos',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     )
                   : Container(),
               const Spacer(),
-              totalContacts! > 0
-                  ? Button(
-                      onPressed: () {
-                        if (selectedContacts.isNotEmpty) {
-                          for (var index = 0;
-                              index < contacts.length;
-                              index++) {
-                            contactsProvider.removeSelectedContact(
-                              Contact(
-                                contacts[index].name,
-                                contacts[index].phoneNumber,
-                                false,
-                              ),
-                            );
-                            contacts[index].isSelected = false;
-                          }
-                        }
-                      },
-                      child: const Text(
-                        'Remover Todos',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+              contactsProvider.contactsCount > 0
+                  ? Expanded(
+                      flex: 5,
+                      child: Button(
+                        onPressed: () {
+                          contactsProvider.makeAllContactsAsUnselected();
+                        },
+                        child: const Text(
+                          'Nenhum',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     )
                   : Container(),
@@ -186,14 +122,10 @@ class ContactsList extends StatelessWidget {
                     width: double.infinity,
                     child: Button(
                       onPressed: () {
-                        for (var index = 0;
-                            index < selectedContacts.length;
-                            index++) {
-                          debugPrint('Nome: ${selectedContacts[index].name}');
-                        }
+                        sendMessage(selectedContacts);
                       },
                       child: Text(
-                        'Enviar (${selectedContacts.length})',
+                        'Enviar ($selectedContactsCount)',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -206,5 +138,61 @@ class ContactsList extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void selectContacts(
+    BuildContext context,
+    List<Contact> contacts,
+    ContactList contactsProvider,
+  ) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result == null) {
+      return;
+    }
+
+    PlatformFile file = result.files.first;
+
+    var bytes = File('${file.path}').readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+
+    final Iterable<String> keys = excel.tables.keys;
+    final totalColumns = excel.tables[keys.first]!.maxCols;
+
+    if (totalColumns != 2) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return const ErrorContentDialog(
+            Messages.excelLoadingTitle,
+            Messages.excelLoadingContent,
+            Messages.excelLoadingButtonText,
+          );
+        },
+      );
+    } else {
+      for (var table in keys) {
+        for (var row in excel.tables[table]!.rows) {
+          final Data? nameRow = row[0];
+          final Data? numberRow = row[1];
+          if (nameRow!.cellIndex.rowIndex == 0) {
+            continue;
+          }
+          contactsProvider.addContact(
+            Contact(
+              row[0]?.value,
+              (numberRow?.value).toString(),
+              false,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  void sendMessage(List<Contact> selectedContacts) {
+    for (var index = 0; index < selectedContacts.length; index++) {
+      debugPrint('Nome: ${selectedContacts[index].name}');
+    }
   }
 }

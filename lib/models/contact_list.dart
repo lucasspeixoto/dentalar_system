@@ -8,15 +8,16 @@ class ContactList with ChangeNotifier {
     return _contacts.length;
   }
 
+  late final List<Contact> _selectedContacts = [];
+  List<Contact> get selectedContacts => [..._selectedContacts];
+
+  int get selectedContactsCount {
+    return _selectedContacts.length;
+  }
+
   void addContact(Contact contact) {
     _contacts.add(contact);
     notifyListeners();
-  }
-
-  late List<Contact> _selectedContacts = [];
-  List<Contact> get selectedContacts => [..._selectedContacts];
-  int get selectedContactsCount {
-    return _contacts.length;
   }
 
   void addSelectedContacts(Contact contact) {
@@ -25,28 +26,66 @@ class ContactList with ChangeNotifier {
   }
 
   void removeSelectedContact(Contact contact) {
-    int index = _selectedContacts.indexWhere((c) => c.name == contact.name);
-    if (index >= 0) {
-      _selectedContacts.removeWhere((c) => c.name == contact.name);
+    _selectedContacts.removeWhere((c) => c.name == contact.name);
+    notifyListeners();
+  }
+
+  void makeAllContactsAsSelected() {
+    if (_selectedContacts.length < _contacts.length) {
+      for (var index = 0; index < _contacts.length; index++) {
+        if (_contacts[index].isSelected == false) {
+          _contacts[index].isSelected = true;
+          addSelectedContacts(
+            Contact(
+              _contacts[index].name,
+              _contacts[index].phoneNumber,
+              true,
+            ),
+          );
+        }
+      }
       notifyListeners();
     }
   }
 
-  void clearSelectedContact() {
-    _selectedContacts = [];
-    notifyListeners();
-  }
-
-  void addAllContactsToSelectedList() {
-    _selectedContacts = _contacts;
-    notifyListeners();
-  }
-
-  void updateIsSelectedItem(Contact contact) {
-    int index = _contacts.indexWhere((c) => c.name == contact.name);
-    if (index >= 0) {
-      _contacts[index] = contact;
+  void makeAllContactsAsUnselected() {
+    if (_selectedContacts.isNotEmpty) {
+      for (var index = 0; index < _contacts.length; index++) {
+        if (_contacts[index].isSelected == true) {
+          _contacts[index].isSelected = false;
+          removeSelectedContact(
+            Contact(
+              _contacts[index].name,
+              _contacts[index].phoneNumber,
+              false,
+            ),
+          );
+        }
+      }
       notifyListeners();
     }
+  }
+
+  void changeSelectItemStatus(int index) {
+    bool tappedContactStatus = _contacts[index].isSelected;
+    _contacts[index].isSelected = !tappedContactStatus;
+    if (!tappedContactStatus) {
+      addSelectedContacts(
+        Contact(
+          _contacts[index].name,
+          _contacts[index].phoneNumber,
+          true,
+        ),
+      );
+    } else {
+      removeSelectedContact(
+        Contact(
+          _contacts[index].name,
+          _contacts[index].phoneNumber,
+          false,
+        ),
+      );
+    }
+    notifyListeners();
   }
 }

@@ -20,7 +20,10 @@ class ContactItem extends StatelessWidget {
     return TappableListTile(
       leading: const CircleAvatar(
         backgroundColor: Palette.secondaryColor,
-        child: Icon(FluentIcons.reminder_person, color: Colors.white),
+        child: Icon(
+          FluentIcons.reminder_person,
+          color: Colors.white,
+        ),
       ),
       title: Expanded(
         child: Text(
@@ -46,24 +49,7 @@ class ContactItem extends StatelessWidget {
               color: Colors.grey,
             ),
       onTap: () {
-        contacts[index].isSelected = !contacts[index].isSelected;
-        if (contacts[index].isSelected == true) {
-          contactsProvider.addSelectedContacts(
-            Contact(
-              contacts[index].name,
-              contacts[index].phoneNumber,
-              true,
-            ),
-          );
-        } else if (contacts[index].isSelected == false) {
-          contactsProvider.removeSelectedContact(
-            Contact(
-              contacts[index].name,
-              contacts[index].phoneNumber,
-              false,
-            ),
-          );
-        }
+        contactsProvider.changeSelectItemStatus(index);
       },
     );
   }
